@@ -1,0 +1,5 @@
+keras
+tensorflow
+nltk
+pymystem3
+tqdm
