@@ -1,4 +1,4 @@
-import json
+import csv
 import pathlib
 import re
 from typing import List, Tuple
@@ -11,7 +11,7 @@ from tqdm import tqdm
 nltk.download("stopwords")
 from nltk.corpus import stopwords
 
-CORRECT_LEMMATIZE = False
+CORRECT_LEMMATIZE = True
 CHECK_STOPWORDS = False
 
 input_first_file_name = "Волшебник изумрудного города.txt"
@@ -82,7 +82,7 @@ def clear_sentence(text):
 
 
 def get_output_file_name():
-    return f"{input_first_file_name.strip('.txt')}_{input_second_file_name.strip('.txt')}_{'lemmatized' if CORRECT_LEMMATIZE else 'not_lemmatized'}_{'without_stopwords' if CHECK_STOPWORDS else 'with_stopwords'}.json"
+    return f"{input_first_file_name.strip('.txt')}_{input_second_file_name.strip('.txt')}_{'lemmatized' if CORRECT_LEMMATIZE else 'not_lemmatized'}_{'without_stopwords' if CHECK_STOPWORDS else 'with_stopwords'}.csv"
 
 
 def main():
@@ -110,8 +110,19 @@ def main():
         output_file_name = get_output_file_name()
         output_file_path = pathlib.Path.cwd() / "output" / output_file_name
         output_file_path.parent.mkdir(exist_ok=True, parents=True)
-        with open(str(output_file_path), "w+", encoding="UTF-8") as output_file:
-            json.dump(bag, output_file, indent=4, ensure_ascii=False)
+        with open(str(output_file_path), "w+", newline="") as output_file:
+            output_csv = csv.writer(output_file)
+            output_csv.writerow(
+                [
+                    "Слово",
+                    "Сумма вхождений",
+                    input_first_file_name,
+                    input_second_file_name,
+                ]
+            )
+            for word in bag.keys():
+                counters = bag[word]
+                output_csv.writerow([word, *counters])
 
 
 if __name__ == "__main__":
