@@ -3,3 +3,5 @@ tensorflow
 nltk
 pymystem3
 tqdm
+numpy
+scipy
